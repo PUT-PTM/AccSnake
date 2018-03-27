@@ -20,8 +20,8 @@ int jest;
 bloczek tab[WIDTH][LENGTH];
 
 int punkty=0;
+TM_LIS302DL_LIS3DSH_t Axes;
 
-TM_LIS302DL_LIS3DSH_Device_t Axes;
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void TIM3_IRQHandler()//TIMER odpowiedzialny za prędkość snake'a
 {
@@ -30,6 +30,13 @@ void TIM3_IRQHandler()//TIMER odpowiedzialny za prędkość snake'a
     if(TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
     {
     TM_LIS302DL_LIS3DSH_ReadAxes(&Axes);
+	    int8_t x, y, z;
+	    x=Axes.X;
+	    y=Axes.Y;
+	    z=Axes.Z;
+	    x=x*19,62;
+	    y=y*19,62;
+	    z=z*19,62;
     //if(Axes.X)...
     //if(Axes.Y)...
     }
@@ -108,6 +115,10 @@ int main(void)
 	NVIC_Init(&NVIC_InitStructure2);
 	TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
 	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
+	
+	TM_LIS302DL_LIS3DSH_Init(TM_LIS302DL_Sensitivity_2_3G, TM_LIS302DL_Filter_2Hz);
+	
+	
     PCD8544_Init(0x38);
 
 	while(1){}
