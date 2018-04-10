@@ -2,12 +2,11 @@
 #include<stm32f4xx_tim.h>
 #include<stm32f4xx_gpio.h>
 #include<stm32f4xx_syscfg.h>
-
 #include "tm_stm32f4_gpio.h"
 #include "tm_stm32f4_lis302dl_lis3dsh.h"
 #include "tm_stm32f4_pcd8544.h"
 #include "tm_stm32f4_spi.h"
-#include "misc.h"
+#include <misc.h>
 
 #define WIDTH 30
 #define LENGTH 20
@@ -17,29 +16,57 @@ typedef struct
 int jest;
 }bloczek;
 
-bloczek tab[WIDTH][LENGTH];
+bloczek tab[WIDTH/4][LENGTH/4];
 
 int punkty=0;
 TM_LIS302DL_LIS3DSH_t Axes;
+int abs(int x){
+
+	if(x<0)return -x;
+	if(x>=0)return x;
+}
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void TIM3_IRQHandler()//TIMER odpowiedzialny za prÄ™dkoÅ›Ä‡ snake'a
+void TIM3_IRQHandler()//TIMER odpowiedzialny za prêdkoœæ snake'a
 {
 
 
     if(TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
     {
+
     TM_LIS302DL_LIS3DSH_ReadAxes(&Axes);
-	    int8_t x, y, z;
-	    x=Axes.X;
-	    y=Axes.Y;
-	    z=Axes.Z;
-	    x=x*19,62;
-	    y=y*19,62;
-	    z=z*19,62;
-    //if(Axes.X)...
-    //if(Axes.Y)...
+
+    int i;
+    for(i=0;i<0xFFF;i++){}
+	    if(Axes.X<-200&&abs(Axes.X)>abs(Axes.Y))
+	    {
+	    	if(abs(Axes.X)>abs(Axes.Y))GPIO_SetBits(GPIOD, GPIO_Pin_15);
+    	}else{
+    		GPIO_ResetBits(GPIOD, GPIO_Pin_15);
+    	}
+	   if(Axes.X>200&&abs(Axes.X)>abs(Axes.Y))
+	    {
+		    if(abs(Axes.X)>abs(Axes.Y))GPIO_SetBits(GPIOD, GPIO_Pin_13);
+	    }else{
+    		GPIO_ResetBits(GPIOD, GPIO_Pin_13);
+    	}
+
+	   if(Axes.Y<-200&&abs(Axes.Y)>abs(Axes.X))
+		    {
+
+		    GPIO_SetBits(GPIOD, GPIO_Pin_12);
+	    	}else{
+	    		GPIO_ResetBits(GPIOD, GPIO_Pin_12);
+	    	}
+		   if(Axes.Y>200&&abs(Axes.Y)>abs(Axes.X))
+		    {
+			   if(abs(Axes.Y)>abs(Axes.X))GPIO_SetBits(GPIOD, GPIO_Pin_14);
+		    }else{
+	    		GPIO_ResetBits(GPIOD, GPIO_Pin_14);
+	    	}
+
     }
+
 
 
 PCD8544_Clear();
@@ -59,7 +86,7 @@ void TIM2_IRQHandler()//Odpowiedzialny za wyswietlanie i update wyswietlacza (f=
             	 		 PCD8544_GotoXY(i,j);
 							if(tab[i][j].jest==1)
 							{
-            	 			//Funkcja do rysowania, nie zdecydowaÅ‚em jaka "gruboÅ›Ä‡" wÄ™Å¼a, i nie mam pojÄ™cia jak animowaÄ‡ gÅ‚owÄ™. Do pracy mam piksele, a Å¼eby gÅ‚owa byÅ‚a animowana to trzeba ich trochÄ™ zuÅ¼yÄ‡, co wpÅ‚ynie na "wielkoÅ›Ä‡" samego snake'a.
+            	 			//Funkcja do rysowania, nie zdecydowa³em jaka "gruboœæ" wê¿a, i nie mam pojêcia jak animowaæ g³owê. Do pracy mam piksele, a ¿eby g³owa by³a animowana to trzeba ich trochê zu¿yæ, co wp³ynie na "wielkoœæ" samego snake'a.
             	 			PCD8544_Refresh();
             	 			}
             	 	    }
@@ -89,8 +116,8 @@ int main(void)
 	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
 
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure2;
-	TIM_TimeBaseStructure2.TIM_Period = 8399;
-	TIM_TimeBaseStructure2.TIM_Prescaler = 4999;
+	TIM_TimeBaseStructure2.TIM_Period = 839;
+	TIM_TimeBaseStructure2.TIM_Prescaler = 499;
 	TIM_TimeBaseStructure2.TIM_ClockDivision = TIM_CKD_DIV1;
 	TIM_TimeBaseStructure2.TIM_CounterMode =  TIM_CounterMode_Up;
 	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure2);
@@ -115,10 +142,25 @@ int main(void)
 	NVIC_Init(&NVIC_InitStructure2);
 	TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
 	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
-	
+
 	TM_LIS302DL_LIS3DSH_Init(TM_LIS302DL_Sensitivity_2_3G, TM_LIS302DL_Filter_2Hz);
-	
-	
+
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+	GPIO_InitTypeDef GPIO_InitDef;
+	//Apply settings just to GPIO_Pin_13:
+	GPIO_InitDef.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14|GPIO_Pin_15|GPIO_Pin_12;
+	//This will apply same settings to all pins for one GPIO
+	GPIO_InitDef.GPIO_Pin = GPIO_Pin_All;
+	GPIO_InitDef.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitDef.GPIO_OType = GPIO_OType_PP;
+	//Without pull resistors
+	GPIO_InitDef.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	//50MHz pin speed
+	GPIO_InitDef.GPIO_Speed = GPIO_Speed_50MHz;
+
+	//Initialize pins on GPIOG port
+	GPIO_Init(GPIOD, &GPIO_InitDef);
+
     PCD8544_Init(0x38);
 
 	while(1){}
