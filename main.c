@@ -105,8 +105,7 @@ void TIM2_IRQHandler()//Odpowiedzialny za wyswietlanie i update wyswietlacza (f=
             	 PCD8544_DrawRectangle(X1-1,Y1-1,X2+1,Y2+1,PCD8544_Pixel_Set);
             	 tab[0][0].jest=1;
             	 tab[0][1].jest=1;
-            	 tab[1][0].jest=1;
-            	 tab[1][1].jest=1;
+
             	 int tysiace, setki, dziesiatki, jednosci,points=punkty;
             	 tysiace=points/1000;
             	 points=points-tysiace*1000;
@@ -124,12 +123,13 @@ void TIM2_IRQHandler()//Odpowiedzialny za wyswietlanie i update wyswietlacza (f=
             	 PCD8544_GotoXY(16,1);
             	 PCD8544_Putc(jednosci+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
             	 PCD8544_Home();
-            	 int i=1,j=11;
-            	 for(i;i<X2;i++)
+            	 int i=X1,j=Y1;
+            	 for(i;i<=X2;i=i+1)
             	 {
-            		 for(j;j<Y2;j++)
+            		 for(j;j<=Y2;j=j+1)
             		 {
-            		 if(tab[i-1][j-11].jest==1)PCD8544_DrawPixel(i,j,PCD8544_Pixel_Set);
+            		 if(tab[i-X1][j-Y1].jest==1)PCD8544_DrawPixel(i,j,PCD8544_Pixel_Set);
+            		 PCD8544_Refresh();
             		 }
             	 }
 
