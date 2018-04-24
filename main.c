@@ -7,173 +7,193 @@
 #include "tm_stm32f4_pcd8544.h"
 #include "tm_stm32f4_spi.h"
 #include <misc.h>
-
-#define WIDTH 30
-#define LENGTH 20
+#include "defines.h"
+#include "stm32f4xx.h"
+#define X1 1
+#define X2 82
+#define Y1 11
+#define Y2 46
 
 typedef struct
 {
 int jest;
-}bloczek;
+}sqr;
 
-bloczek tab[WIDTH/4][LENGTH/4];
-
-int punkty=0;
+sqr tab[81][35];
+int punkty=1234;
 TM_LIS302DL_LIS3DSH_t Axes;
-int abs(int x){
 
+int abs(int x)
+{
 	if(x<0)return -x;
 	if(x>=0)return x;
 }
+movesnake(int i)
+{
+	switch(i)
+	{
+		case '0':
+		{
 
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void TIM3_IRQHandler()//TIMER odpowiedzialny za prêdkoœæ snake'a
+		}
+		case '1':
+		{
+
+		}
+		case '2':
+		{
+
+		}
+		case '3':
+		{
+
+		}
+	}
+}
+void TIM3_IRQHandler()//TIMER odpowiedzialny za predkosc snake'a
 {
 
 
     if(TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
     {
+    	 TM_LIS302DL_LIS3DSH_ReadAxes(&Axes);
 
-    TM_LIS302DL_LIS3DSH_ReadAxes(&Axes);
+    	    int i;
+    	    for(i=0;i<0xFFF;i++){}
+    		    if(Axes.X<-200&&abs(Axes.X)>abs(Axes.Y))
+    		    {
+    		    	if(abs(Axes.X)>abs(Axes.Y))GPIO_SetBits(GPIOD, GPIO_Pin_15);//movesnake(0);
+    	    	}else{
+    	    		GPIO_ResetBits(GPIOD, GPIO_Pin_15);
+    	    	}
+    		   if(Axes.X>200&&abs(Axes.X)>abs(Axes.Y))
+    		    {
+    			    if(abs(Axes.X)>abs(Axes.Y))GPIO_SetBits(GPIOD, GPIO_Pin_13);//movesnake(0);
+    		    }else{
+    	    		GPIO_ResetBits(GPIOD, GPIO_Pin_13);
+    	    	}
 
-    int i;
-    for(i=0;i<0xFFF;i++){}
-	    if(Axes.X<-200&&abs(Axes.X)>abs(Axes.Y))
-	    {
-	    	if(abs(Axes.X)>abs(Axes.Y))GPIO_SetBits(GPIOD, GPIO_Pin_15);
-    	}else{
-    		GPIO_ResetBits(GPIOD, GPIO_Pin_15);
-    	}
-	   if(Axes.X>200&&abs(Axes.X)>abs(Axes.Y))
-	    {
-		    if(abs(Axes.X)>abs(Axes.Y))GPIO_SetBits(GPIOD, GPIO_Pin_13);
-	    }else{
-    		GPIO_ResetBits(GPIOD, GPIO_Pin_13);
-    	}
+    		   if(Axes.Y<-200&&abs(Axes.Y)>abs(Axes.X))
+    		   {
 
-	   if(Axes.Y<-200&&abs(Axes.Y)>abs(Axes.X))
-		    {
-
-		    GPIO_SetBits(GPIOD, GPIO_Pin_12);
-	    	}else{
-	    		GPIO_ResetBits(GPIOD, GPIO_Pin_12);
-	    	}
-		   if(Axes.Y>200&&abs(Axes.Y)>abs(Axes.X))
-		    {
-			   if(abs(Axes.Y)>abs(Axes.X))GPIO_SetBits(GPIOD, GPIO_Pin_14);
-		    }else{
-	    		GPIO_ResetBits(GPIOD, GPIO_Pin_14);
-	    	}
+    			   if(abs(Axes.Y)>abs(Axes.X))GPIO_SetBits(GPIOD, GPIO_Pin_12);//movesnake(0);
+    		   }
+    		   else
+    		   {
+    		    		GPIO_ResetBits(GPIOD, GPIO_Pin_12);
+    		   }
+    			   if(Axes.Y>200&&abs(Axes.Y)>abs(Axes.X))
+    			    {
+    				   if(abs(Axes.Y)>abs(Axes.X))GPIO_SetBits(GPIOD, GPIO_Pin_14);//movesnake(0);
+    			    }else{
+    		    		GPIO_ResetBits(GPIOD, GPIO_Pin_14);
+    		    	}
 
     }
 
 
 
-PCD8544_Clear();
 TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
 }
+
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void TIM2_IRQHandler()//Odpowiedzialny za wyswietlanie i update wyswietlacza (f= 100 Hz)
 {
-             if(TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)
-             {
+	if(TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)
+	{
 
-            	 int i,j;
-            	 	for(j=0;j<LENGTH;j++)
-            	 	{
-            	 		 for(i=0;i<WIDTH;i++)
-            	 	 	{
-            	 		 PCD8544_GotoXY(i,j);
-							if(tab[i][j].jest==1)
-							{
-            	 			//Funkcja do rysowania, nie zdecydowa³em jaka "gruboœæ" wê¿a, i nie mam pojêcia jak animowaæ g³owê. Do pracy mam piksele, a ¿eby g³owa by³a animowana to trzeba ich trochê zu¿yæ, co wp³ynie na "wielkoœæ" samego snake'a.
-            	 			PCD8544_Refresh();
-            	 			}
-            	 	    }
-            	 	}
+            	 PCD8544_DrawRectangle(X1-1,Y1-1,X2+1,Y2+1,PCD8544_Pixel_Set);
+            	 tab[0][0].jest=1;
+            	 tab[0][1].jest=1;
+            	 tab[1][0].jest=1;
+            	 tab[1][1].jest=1;
+            	 int tysiace, setki, dziesiatki, jednosci,points=punkty;
+            	 tysiace=points/1000;
+            	 points=points-tysiace*1000;
+            	 setki=points/100;
+            	 points=points-setki*100;
+            	 dziesiatki=points/10;
+            	 points=points-dziesiatki*10;
+            	 jednosci=points;
+            	 PCD8544_GotoXY(1,1);
+            	 PCD8544_Putc(tysiace+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
+            	 PCD8544_GotoXY(6,1);
+            	 PCD8544_Putc(setki+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
+            	 PCD8544_GotoXY(11,1);
+            	 PCD8544_Putc(dziesiatki+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
+            	 PCD8544_GotoXY(16,1);
+            	 PCD8544_Putc(jednosci+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
+            	 PCD8544_Home();
+            	 int i=1,j=11;
+            	 for(i;i<X2;i++)
+            	 {
+            		 for(j;j<Y2;j++)
+            		 {
+            		 if(tab[i-1][j-11].jest==1)PCD8544_DrawPixel(i,j,PCD8544_Pixel_Set);
+            		 }
+            	 }
 
 
-            	 	PCD8544_Refresh();
-                    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-             }
+
+	}
+PCD8544_Refresh();
+TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 }
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 int main(void)
 {
-	SystemInit();
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
-
-	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-	TIM_TimeBaseStructure.TIM_Period = 209;
-	TIM_TimeBaseStructure.TIM_Prescaler = 249;
-	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-	TIM_TimeBaseStructure.TIM_CounterMode =  TIM_CounterMode_Up;
-	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
-
-	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure2;
-	TIM_TimeBaseStructure2.TIM_Period = 839;
-	TIM_TimeBaseStructure2.TIM_Prescaler = 499;
-	TIM_TimeBaseStructure2.TIM_ClockDivision = TIM_CKD_DIV1;
-	TIM_TimeBaseStructure2.TIM_CounterMode =  TIM_CounterMode_Up;
-	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure2);
-
-	TIM_Cmd(TIM2, ENABLE);
-	TIM_Cmd(TIM3, ENABLE);
-
-	NVIC_InitTypeDef NVIC_InitStructure;
-	NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
-	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-
-	NVIC_InitTypeDef NVIC_InitStructure2;
-	NVIC_InitStructure2.NVIC_IRQChannel = TIM3_IRQn;
-	NVIC_InitStructure2.NVIC_IRQChannelPreemptionPriority = 0x00;
-	NVIC_InitStructure2.NVIC_IRQChannelSubPriority = 0x00;
-	NVIC_InitStructure2.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure2);
-	TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
-	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
-
-	TM_LIS302DL_LIS3DSH_Init(TM_LIS302DL_Sensitivity_2_3G, TM_LIS302DL_Filter_2Hz);
-
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-	GPIO_InitTypeDef GPIO_InitDef;
-	//Apply settings just to GPIO_Pin_13:
-	GPIO_InitDef.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14|GPIO_Pin_15|GPIO_Pin_12;
-	//This will apply same settings to all pins for one GPIO
-	GPIO_InitDef.GPIO_Pin = GPIO_Pin_All;
-	GPIO_InitDef.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitDef.GPIO_OType = GPIO_OType_PP;
-	//Without pull resistors
-	GPIO_InitDef.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	//50MHz pin speed
-	GPIO_InitDef.GPIO_Speed = GPIO_Speed_50MHz;
-
-	//Initialize pins on GPIOG port
-	GPIO_Init(GPIOD, &GPIO_InitDef);
+		SystemInit();
+		NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+		TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+		TIM_TimeBaseStructure.TIM_Period = 839;
+		TIM_TimeBaseStructure.TIM_Prescaler = 99;
+		TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+		TIM_TimeBaseStructure.TIM_CounterMode =  TIM_CounterMode_Up;
+		TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+		TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure2;
+		TIM_TimeBaseStructure2.TIM_Period = 8399;
+		TIM_TimeBaseStructure2.TIM_Prescaler = 2499;
+		TIM_TimeBaseStructure2.TIM_ClockDivision = TIM_CKD_DIV1;
+		TIM_TimeBaseStructure2.TIM_CounterMode =  TIM_CounterMode_Up;
+		TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure2);
+		TIM_Cmd(TIM2, ENABLE);
+		TIM_Cmd(TIM3, ENABLE);
+		NVIC_InitTypeDef NVIC_InitStructure;
+		NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+		NVIC_Init(&NVIC_InitStructure);
+		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+		TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+		NVIC_InitTypeDef NVIC_InitStructure2;
+		NVIC_InitStructure2.NVIC_IRQChannel = TIM3_IRQn;
+		NVIC_InitStructure2.NVIC_IRQChannelPreemptionPriority = 0x00;
+		NVIC_InitStructure2.NVIC_IRQChannelSubPriority = 0x00;
+		NVIC_InitStructure2.NVIC_IRQChannelCmd = ENABLE;
+		NVIC_Init(&NVIC_InitStructure2);
+		TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
+		TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
+		TM_LIS302DL_LIS3DSH_Init(TM_LIS302DL_Sensitivity_2_3G, TM_LIS302DL_Filter_2Hz);
+		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+		GPIO_InitTypeDef GPIO_InitDef;
+		GPIO_InitDef.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14|GPIO_Pin_15|GPIO_Pin_12;
+		GPIO_InitDef.GPIO_Pin = GPIO_Pin_All;
+		GPIO_InitDef.GPIO_Mode = GPIO_Mode_OUT;
+		GPIO_InitDef.GPIO_OType = GPIO_OType_PP;
+		GPIO_InitDef.GPIO_PuPd = GPIO_PuPd_NOPULL;
+		GPIO_InitDef.GPIO_Speed = GPIO_Speed_50MHz;
+		GPIO_Init(GPIOD, &GPIO_InitDef);
 
     PCD8544_Init(0x38);
+    PCD8544_SetContrast(0x38);
+
+
 
 	while(1){}
-
-
-
-
-
-
-
-
-
-
-
 
 }
