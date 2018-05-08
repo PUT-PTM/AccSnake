@@ -16,6 +16,8 @@
 
 typedef struct
 {
+int head;
+int tail;
 int jest;
 }sqr;
 
@@ -28,28 +30,119 @@ int abs(int x)
 	if(x<0)return -x;
 	if(x>=0)return x;
 }
-movesnake(int i)
+void spawnsnake(){
+	int i=0,j=0;
+	for(i;i<81;i=i+1)
+	{
+		for(j;j<35;j=j+1)
+		{
+		tab[i][j].jest=0;
+		tab[i][j].head=0;
+		tab[i][j].tail=0;
+		}
+
+	}
+	tab[40][17].jest=1;
+	tab[40][17].tail=1;
+	tab[41][17].jest=1;
+	tab[42][17].jest=1;
+	tab[42][17].head=1;
+
+}
+void gameover(){
+	 int tysiace, setki, dziesiatki, jednosci,points=punkty;
+           	 tysiace=points/1000;
+           	 points=points-tysiace*1000;
+           	 setki=points/100;
+           	 points=points-setki*100;
+           	 dziesiatki=points/10;
+           	 points=points-dziesiatki*10;
+           	 jednosci=points;
+           	 PCD8544_Clear();
+           	 PCD8544_GotoXY(34,36);
+           	 PCD8544_Putc(tysiace+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
+           	 PCD8544_GotoXY(39,36);
+           	 PCD8544_Putc(setki+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
+           	 PCD8544_GotoXY(44,36);
+           	 PCD8544_Putc(dziesiatki+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
+           	 PCD8544_GotoXY(49,36);
+           	 PCD8544_Putc(jednosci+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
+           	 PCD8544_Puts("Game over",PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
+           	 PCD8544_Refresh();
+
+}
+/* void movesnake(int i)
 {
+	int tailx, taily, headx, heady;
+	int k=0;
+	int j=0;
+	for(k=0;k<81;k=k+1)
+		{
+			for(j=0;j<35;j=j+1)
+			{
+				if(tab[k][j].jest==1&&tab[k][j].tail==1)
+				{
+				tailx=k;
+				taily=j;
+				if(tab[k][j-1].jest==1)tab[k][j-1].tail=1;
+				if(tab[k-1][j].jest==1)tab[k-1][j].tail=1;
+				if(tab[k+1][j].jest==1)tab[k+1][j].tail=1;
+				if(tab[k][j+1].jest==1)tab[k][j+1].tail=1;
+				}
+				if(tab[k][j].jest==1&&tab[k][j].head==1)
+				{
+				headx=k;
+				heady=j;
+				}
+
+
+			}
+
+		}
+
+
+
 	switch(i)
 	{
 		case '0':
 		{
-
+		if(heady-1<=-1)gameover();
+		tab[tailx][taily].jest=0;
+		tab[headx][heady].head=0;
+		if(tab[headx][heady-1].jest==1)gameover();
+		tab[headx][heady-1].jest=1;
+		tab[headx][heady-1].head=1;
 		}
 		case '1':
 		{
-
+		if(headx+1>=81)gameover();
+		tab[tailx][taily].jest=0;
+		tab[headx][heady].head=0;
+		if(tab[headx+1][heady].jest==1)gameover();
+		tab[headx+1][heady].jest=1;
+		tab[headx+1][heady].head=1;
 		}
 		case '2':
 		{
+		if(headx-1<=-1)gameover();
+		tab[tailx][taily].jest=0;
+		tab[headx][heady].head=0;
+		if(tab[headx][heady+1].jest==1)gameover();
+		tab[headx][heady+1].jest=1;
+		tab[headx][heady+1].head=0;
 
 		}
 		case '3':
 		{
-
+		if(heady+1>=35)gameover();
+		tab[tailx][taily].jest=0;
+		tab[headx][heady].head=0;
+		if(tab[headx-1][heady].jest==1)gameover();
+		tab[headx-1][heady].jest=1;
+		tab[headx-1][heady].head=1;
 		}
 	}
-}
+}*/
 void TIM3_IRQHandler()//TIMER odpowiedzialny za predkosc snake'a
 {
 
@@ -62,13 +155,15 @@ void TIM3_IRQHandler()//TIMER odpowiedzialny za predkosc snake'a
     	    for(i=0;i<0xFFF;i++){}
     		    if(Axes.X<-200&&abs(Axes.X)>abs(Axes.Y))
     		    {
-    		    	if(abs(Axes.X)>abs(Axes.Y))GPIO_SetBits(GPIOD, GPIO_Pin_15);//movesnake(0);
+    		    	if(abs(Axes.X)>abs(Axes.Y))GPIO_SetBits(GPIOD, GPIO_Pin_15);
+    		    	//movesnake(0);
     	    	}else{
     	    		GPIO_ResetBits(GPIOD, GPIO_Pin_15);
     	    	}
     		   if(Axes.X>200&&abs(Axes.X)>abs(Axes.Y))
     		    {
-    			    if(abs(Axes.X)>abs(Axes.Y))GPIO_SetBits(GPIOD, GPIO_Pin_13);//movesnake(0);
+    			    if(abs(Axes.X)>abs(Axes.Y))GPIO_SetBits(GPIOD, GPIO_Pin_13);
+    			    //movesnake(1);
     		    }else{
     	    		GPIO_ResetBits(GPIOD, GPIO_Pin_13);
     	    	}
@@ -76,7 +171,8 @@ void TIM3_IRQHandler()//TIMER odpowiedzialny za predkosc snake'a
     		   if(Axes.Y<-200&&abs(Axes.Y)>abs(Axes.X))
     		   {
 
-    			   if(abs(Axes.Y)>abs(Axes.X))GPIO_SetBits(GPIOD, GPIO_Pin_12);//movesnake(0);
+    			   if(abs(Axes.Y)>abs(Axes.X))GPIO_SetBits(GPIOD, GPIO_Pin_12);
+    			   //movesnake(2);
     		   }
     		   else
     		   {
@@ -84,7 +180,8 @@ void TIM3_IRQHandler()//TIMER odpowiedzialny za predkosc snake'a
     		   }
     			   if(Axes.Y>200&&abs(Axes.Y)>abs(Axes.X))
     			    {
-    				   if(abs(Axes.Y)>abs(Axes.X))GPIO_SetBits(GPIOD, GPIO_Pin_14);//movesnake(0);
+    				   if(abs(Axes.Y)>abs(Axes.X))GPIO_SetBits(GPIOD, GPIO_Pin_14);
+    				  // movesnake(3);
     			    }else{
     		    		GPIO_ResetBits(GPIOD, GPIO_Pin_14);
     		    	}
@@ -103,8 +200,8 @@ void TIM2_IRQHandler()//Odpowiedzialny za wyswietlanie i update wyswietlacza (f=
 	{
 
             	 PCD8544_DrawRectangle(X1-1,Y1-1,X2+1,Y2+1,PCD8544_Pixel_Set);
-            	 tab[0][0].jest=1;
-            	 tab[0][1].jest=1;
+            	 tab[40][20].jest=1;
+            	 tab[40][21].jest=1;
             	 int tysiace, setki, dziesiatki, jednosci,points=punkty;
             	 tysiace=points/1000;
             	 points=points-tysiace*1000;
@@ -122,12 +219,12 @@ void TIM2_IRQHandler()//Odpowiedzialny za wyswietlanie i update wyswietlacza (f=
             	 PCD8544_GotoXY(16,1);
             	 PCD8544_Putc(jednosci+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
             	 PCD8544_Home();
-            	 int i=X1,j=Y1;
-            	 for(i;i<=X2;i=i+1)
+            	 int i=0,j=0;
+            	 for(i=0;i<=81;i=i+1)
             	 {
-            		 for(j;j<=Y2;j=j+1)
+            		 for(j=0;j<=35;j=j+1)
             		 {
-            		 if(tab[i-X1][j-Y1].jest==1)PCD8544_DrawPixel(i,j,PCD8544_Pixel_Set);
+            		 if(tab[i][j].jest==1)PCD8544_DrawPixel(i+1,j+10,PCD8544_Pixel_Set);
             		 PCD8544_Refresh();
             		 }
             	 }
@@ -187,6 +284,7 @@ int main(void)
 		GPIO_InitDef.GPIO_PuPd = GPIO_PuPd_NOPULL;
 		GPIO_InitDef.GPIO_Speed = GPIO_Speed_50MHz;
 		GPIO_Init(GPIOD, &GPIO_InitDef);
+		//spawnsnake();
 
     PCD8544_Init(0x38);
     PCD8544_SetContrast(0x38);
