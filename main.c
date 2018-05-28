@@ -47,7 +47,7 @@ void spawnsnake(){
 	tab[41][17].jest=1;
 	tab[42][17].jest=1;
 	tab[42][17].head=1;
-	tab[50][22].bonus==1;
+	tab[50][22].bonus=1;
 
 }
 void gameover(){
