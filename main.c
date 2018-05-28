@@ -103,8 +103,8 @@ void TIM2_IRQHandler()//Odpowiedzialny za wyswietlanie i update wyswietlacza (f=
 	{
 
             	 PCD8544_DrawRectangle(X1-1,Y1-1,X2+1,Y2+1,PCD8544_Pixel_Set);
-            	 tab[0][0].jest=1;
-            	 tab[0][1].jest=1;
+            	 /* tab[40][20].jest=1;
+            	 tab[40][21].jest=1;
             	 int tysiace, setki, dziesiatki, jednosci,points=punkty;
             	 tysiace=points/1000;
             	 points=points-tysiace*1000;
@@ -122,18 +122,18 @@ void TIM2_IRQHandler()//Odpowiedzialny za wyswietlanie i update wyswietlacza (f=
             	 PCD8544_GotoXY(16,1);
             	 PCD8544_Putc(jednosci+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
             	 PCD8544_Home();
-            	 int i=X1,j=Y1;
-            	 for(i;i<=X2;i=i+1)
+            	 /* int i=0,j=0;
+            	 for(i;i<X2;i=i+1)
             	 {
-            		 for(j;j<=Y2;j=j+1)
+            		 for(j;j<Y2;j=j+1)
             		 {
-            		 if(tab[i-X1][j-Y1].jest==1)PCD8544_DrawPixel(i,j,PCD8544_Pixel_Set);
+            		 if(tab[i][j].jest==1)PCD8544_DrawPixel(i+1,j+11,PCD8544_Pixel_Set);
             		 PCD8544_Refresh();
             		 }
             	 }
 
 
-
+*/
 	}
 PCD8544_Refresh();
 TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
@@ -189,7 +189,7 @@ int main(void)
 		GPIO_Init(GPIOD, &GPIO_InitDef);
 
     PCD8544_Init(0x38);
-    PCD8544_SetContrast(0x38);
+    PCD8544_SetContrast(0x00);
 
 
 

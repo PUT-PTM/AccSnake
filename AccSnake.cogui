@@ -15,9 +15,9 @@
 </folder>
 </info>
 </editorArea>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" partName="main.c" path="C:/CooCox/CoIDE/workspace/AccSnake/main.c" title="main.c" tooltip="C:/CooCox/CoIDE/workspace/AccSnake/main.c" workbook="DefaultEditorWorkbook">
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" partName="main.c" path="C:/Users/Jacob/Documents/GitHub/AccSnake/main.c" title="main.c" tooltip="C:/Users/Jacob/Documents/GitHub/AccSnake/main.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/AccSnake/main.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="5768" selectionTopPixel="2991"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="5941" selectionTopPixel="2863"/>
 </editor>
 </editors>
 <views>
@@ -141,16 +141,9 @@
 <navigationHistory>
 <editors>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/AccSnake/main.c"/>
-<editor factoryID="org.coocox.component.ui.editors.repository.RepositoryElementFactory" id="org.coocox.builder.ui.editors.repository.RepositoryBrowser">
-<subPage/>
-</editor>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/AccSnake/cmsis_lib/include/tm_stm32f4_lis302dl_lis3dsh.h"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/AccSnake/cmsis_lib/include/tm_stm32f4_lis302dl_lis3dsh.h"/>
 </editors>
-<item historyLabel="Repository" index="1"/>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="334" y="0"/>
-</item>
 <item historyLabel="main.c" index="0">
 <position info="not_deleted" x="758" y="42"/>
 </item>
@@ -184,7 +177,7 @@
 <item historyLabel="main.c" index="0">
 <position info="not_deleted" x="417" y="0"/>
 </item>
-<item historyLabel="tm_stm32f4_lis302dl_lis3dsh.h" index="2">
+<item historyLabel="tm_stm32f4_lis302dl_lis3dsh.h" index="1">
 <position info="not_deleted" x="9496" y="21"/>
 </item>
 <item historyLabel="main.c" index="0">
@@ -205,7 +198,7 @@
 <item historyLabel="main.c" index="0">
 <position info="not_deleted" x="994" y="0"/>
 </item>
-<item historyLabel="tm_stm32f4_lis302dl_lis3dsh.h" index="3">
+<item historyLabel="tm_stm32f4_lis302dl_lis3dsh.h" index="2">
 <position info="not_deleted" x="9496" y="21"/>
 </item>
 <item historyLabel="main.c" index="0">
@@ -292,8 +285,14 @@
 <item historyLabel="main.c" index="0">
 <position/>
 </item>
-<item active="true" historyLabel="main.c" index="0">
+<item historyLabel="main.c" index="0">
 <position/>
+</item>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="3569" y="0"/>
+</item>
+<item active="true" historyLabel="main.c" index="0">
+<position info="not_deleted" x="5962" y="3"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
