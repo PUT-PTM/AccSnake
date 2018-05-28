@@ -16,7 +16,10 @@
 
 typedef struct
 {
+int head;
+int tail;
 int jest;
+int bonus;
 }sqr;
 
 sqr tab[81][35];
@@ -28,32 +31,162 @@ int abs(int x)
 	if(x<0)return -x;
 	if(x>=0)return x;
 }
-movesnake(int i)
+void spawnsnake(){
+	int i=0,j=0;
+	for(;i<81;i=i+1)
+	{
+		for(;j<35;j=j+1)
+		{
+		tab[i][j].jest=0;
+		tab[i][j].head=0;
+		tab[i][j].tail=0;
+		}
+	}
+	tab[40][17].jest=1;
+	tab[40][17].tail=1;
+	tab[41][17].jest=1;
+	tab[42][17].jest=1;
+	tab[42][17].head=1;
+	tab[50][22].bonus==1;
+
+}
+void gameover(){
+	 	 	 int tysiace, setki, dziesiatki, jednosci,points=punkty;
+           	 tysiace=points/1000;
+           	 points=points-tysiace*1000;
+           	 setki=points/100;
+           	 points=points-setki*100;
+           	 dziesiatki=points/10;
+           	 points=points-dziesiatki*10;
+           	 jednosci=points;
+           	 PCD8544_Clear();
+           	 PCD8544_GotoXY(34,36);
+           	 PCD8544_Putc(tysiace+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
+           	 PCD8544_GotoXY(39,36);
+           	 PCD8544_Putc(setki+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
+           	 PCD8544_GotoXY(44,36);
+           	 PCD8544_Putc(dziesiatki+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
+           	 PCD8544_GotoXY(49,36);
+           	 PCD8544_Putc(jednosci+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
+           	 PCD8544_Puts("Game over",PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
+           	 PCD8544_Refresh();
+}
+ void movesnake(int i)
 {
+	int tailx, taily, headx, heady;
+	int k,j;
+	for(k=0;k<81;k=k+1)
+		{
+			for(j=0;j<35;j=j+1)
+			{
+				if(tab[k][j].jest==1&&tab[k][j].tail==1)
+				{
+				tailx=k;
+				taily=j;
+				}
+				if(tab[k][j].jest==1&&tab[k][j].head==1)
+				{
+				headx=k;
+				heady=j;
+				}
+			}
+		}
 	switch(i)
 	{
-		case '0':
+		case 0:
 		{
-
+		if(heady==0)gameover();
+		if(tab[headx][heady-1].bonus==1)
+			{
+			tab[headx][heady-1].jest=1;
+			tab[headx][heady-1].head=1;
+			tab[headx][heady-1].bonus=0;
+			tab[TIM3->PSC%80][TIM3->CNT%34].bonus=1;
+			break;
+			}else{
+				 if(tab[tailx][taily-1].jest==1)tab[tailx][taily-1].tail=1;
+				 if(tab[tailx-1][taily].jest==1)tab[tailx-1][taily].tail=1;
+				 if(tab[tailx+1][taily].jest==1)tab[tailx+1][taily].tail=1;
+				 if(tab[tailx][taily+1].jest==1)tab[tailx][taily+1].tail=1;
+				 tab[tailx][taily].jest=0;
+				 tab[headx][heady].head=0;
+				 if(tab[headx][heady-1].jest==1)gameover();
+				 tab[headx][heady-1].jest=1;
+				 tab[headx][heady-1].head=1;
+				 break;
+				 }
 		}
-		case '1':
+		case 1:
 		{
-
+		if(headx==80)gameover();
+		if(tab[headx+1][heady].bonus==1){
+			tab[headx+1][heady].jest=1;
+			tab[headx+1][heady].head=1;
+			tab[headx+1][heady].bonus=0;
+			tab[TIM3->PSC%80][TIM3->CNT%34].bonus=1;
+			break;
+			}else{
+				if(tab[tailx][taily-1].jest==1)tab[tailx][taily-1].tail=1;
+				if(tab[tailx-1][taily].jest==1)tab[tailx-1][taily].tail=1;
+				if(tab[tailx+1][taily].jest==1)tab[tailx+1][taily].tail=1;
+				if(tab[tailx][taily+1].jest==1)tab[tailx][taily+1].tail=1;
+				tab[tailx][taily].jest=0;
+				tab[headx][heady].head=0;
+				if(tab[headx+1][heady].jest==1)gameover();
+				tab[headx+1][heady].jest=1;
+				tab[headx+1][heady].head=1;
+				break;
+				 }
 		}
-		case '2':
+		case 2:
 		{
-
+		if(headx==0)gameover();
+		if(tab[headx][heady+1].bonus==1){
+			tab[headx][heady+1].jest=1;
+			tab[headx][heady+1].head=1;
+			tab[headx][heady+1].bonus=0;
+			tab[TIM3->PSC%80][TIM3->CNT%34].bonus=1;
+			break;
+			}else{
+				if(tab[tailx][taily-1].jest==1)tab[tailx][taily-1].tail=1;
+				if(tab[tailx-1][taily].jest==1)tab[tailx-1][taily].tail=1;
+				if(tab[tailx+1][taily].jest==1)tab[tailx+1][taily].tail=1;
+				if(tab[tailx][taily+1].jest==1)tab[tailx][taily+1].tail=1;
+				tab[tailx][taily].jest=0;
+				tab[headx][heady].head=0;
+				if(tab[headx][heady+1].jest==1)gameover();
+				tab[headx][heady+1].jest=1;
+				tab[headx][heady+1].head=1;
+				break;
+				}
 		}
-		case '3':
+		case 3:
 		{
-
+		if(heady==34)gameover();
+		if(tab[headx-1][heady].bonus==1)
+			{
+			tab[headx-1][heady].jest=1;
+			tab[headx-1][heady].head=1;
+			tab[headx-1][heady].bonus=0;
+			tab[TIM3->PSC%80][TIM3->CNT%34].bonus=1;
+			break;
+			}else{
+				 if(tab[tailx][taily-1].jest==1)tab[tailx][taily-1].tail=1;
+				 if(tab[tailx-1][taily].jest==1)tab[tailx-1][taily].tail=1;
+				 if(tab[tailx+1][taily].jest==1)tab[tailx+1][taily].tail=1;
+				 if(tab[tailx][taily+1].jest==1)tab[tailx][taily+1].tail=1;
+				 tab[tailx][taily].jest=0;
+			     tab[headx][heady].head=0;
+			     if(tab[headx-1][heady].jest==1)gameover();
+				 tab[headx-1][heady].jest=1;
+				 tab[headx-1][heady].head=1;
+				 break;
+				 }
 		}
 	}
 }
 void TIM3_IRQHandler()//TIMER odpowiedzialny za predkosc snake'a
 {
-
-
     if(TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
     {
     	 TM_LIS302DL_LIS3DSH_ReadAxes(&Axes);
@@ -62,37 +195,38 @@ void TIM3_IRQHandler()//TIMER odpowiedzialny za predkosc snake'a
     	    for(i=0;i<0xFFF;i++){}
     		    if(Axes.X<-200&&abs(Axes.X)>abs(Axes.Y))
     		    {
-    		    	if(abs(Axes.X)>abs(Axes.Y))GPIO_SetBits(GPIOD, GPIO_Pin_15);//movesnake(0);
+    		    	if(abs(Axes.X)>abs(Axes.Y))GPIO_SetBits(GPIOD, GPIO_Pin_15);
+    		    	movesnake(0);
     	    	}else{
     	    		GPIO_ResetBits(GPIOD, GPIO_Pin_15);
     	    	}
     		   if(Axes.X>200&&abs(Axes.X)>abs(Axes.Y))
     		    {
-    			    if(abs(Axes.X)>abs(Axes.Y))GPIO_SetBits(GPIOD, GPIO_Pin_13);//movesnake(0);
-    		    }else{
+    			    if(abs(Axes.X)>abs(Axes.Y))GPIO_SetBits(GPIOD, GPIO_Pin_13);
+    			    movesnake(1);
+    		    }else
+    		    {
     	    		GPIO_ResetBits(GPIOD, GPIO_Pin_13);
     	    	}
-
     		   if(Axes.Y<-200&&abs(Axes.Y)>abs(Axes.X))
     		   {
 
-    			   if(abs(Axes.Y)>abs(Axes.X))GPIO_SetBits(GPIOD, GPIO_Pin_12);//movesnake(0);
+    			   if(abs(Axes.Y)>abs(Axes.X))GPIO_SetBits(GPIOD, GPIO_Pin_12);
+    			   movesnake(2);
     		   }
     		   else
     		   {
-    		    		GPIO_ResetBits(GPIOD, GPIO_Pin_12);
+    		       GPIO_ResetBits(GPIOD, GPIO_Pin_12);
     		   }
-    			   if(Axes.Y>200&&abs(Axes.Y)>abs(Axes.X))
-    			    {
-    				   if(abs(Axes.Y)>abs(Axes.X))GPIO_SetBits(GPIOD, GPIO_Pin_14);//movesnake(0);
-    			    }else{
-    		    		GPIO_ResetBits(GPIOD, GPIO_Pin_14);
-    		    	}
+    		   if(Axes.Y>200&&abs(Axes.Y)>abs(Axes.X))
+    		   {
+    				if(abs(Axes.Y)>abs(Axes.X))GPIO_SetBits(GPIOD, GPIO_Pin_14);
+    				   movesnake(3);
+    		   }else{
+    		    	GPIO_ResetBits(GPIOD, GPIO_Pin_14);
+    		   }
 
     }
-
-
-
 TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
 }
 
@@ -103,9 +237,7 @@ void TIM2_IRQHandler()//Odpowiedzialny za wyswietlanie i update wyswietlacza (f=
 	{
 
             	 PCD8544_DrawRectangle(X1-1,Y1-1,X2+1,Y2+1,PCD8544_Pixel_Set);
-            	 /* tab[40][20].jest=1;
-            	 tab[40][21].jest=1;
-            	 int tysiace, setki, dziesiatki, jednosci,points=punkty;
+           	     int tysiace, setki, dziesiatki, jednosci,points=punkty;
             	 tysiace=points/1000;
             	 points=points-tysiace*1000;
             	 setki=points/100;
@@ -122,18 +254,20 @@ void TIM2_IRQHandler()//Odpowiedzialny za wyswietlanie i update wyswietlacza (f=
             	 PCD8544_GotoXY(16,1);
             	 PCD8544_Putc(jednosci+0x30,PCD8544_Pixel_Set, PCD8544_FontSize_5x7);
             	 PCD8544_Home();
-            	 /* int i=0,j=0;
-            	 for(i;i<X2;i=i+1)
+            	 int i,j;
+            	 for(i=0;i<81;i=i+1)
             	 {
-            		 for(j;j<Y2;j=j+1)
+            		 for(j=0;j<35;j=j+1)
             		 {
-            		 if(tab[i][j].jest==1)PCD8544_DrawPixel(i+1,j+11,PCD8544_Pixel_Set);
+            		 if(tab[i][j].jest==1)PCD8544_DrawPixel(i+1,j+10,PCD8544_Pixel_Set);
+            		 if(tab[i][j].bonus==1)PCD8544_DrawPixel(i+1,j+10,PCD8544_Pixel_Set);
             		 PCD8544_Refresh();
             		 }
             	 }
 
 
-*/
+
+
 	}
 PCD8544_Refresh();
 TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
@@ -187,12 +321,7 @@ int main(void)
 		GPIO_InitDef.GPIO_PuPd = GPIO_PuPd_NOPULL;
 		GPIO_InitDef.GPIO_Speed = GPIO_Speed_50MHz;
 		GPIO_Init(GPIOD, &GPIO_InitDef);
-
-    PCD8544_Init(0x38);
-    PCD8544_SetContrast(0x00);
-
-
-
-	while(1){}
-
+		spawnsnake();
+		PCD8544_Init(0x38);
+		while(1){}
 }
