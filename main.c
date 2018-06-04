@@ -351,7 +351,7 @@ int main(void)
 		TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
 		TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure2;
 		TIM_TimeBaseStructure2.TIM_Period = 8399;
-		TIM_TimeBaseStructure2.TIM_Prescaler = 1499;
+		TIM_TimeBaseStructure2.TIM_Prescaler = 2299;
 		TIM_TimeBaseStructure2.TIM_ClockDivision = TIM_CKD_DIV1;
 		TIM_TimeBaseStructure2.TIM_CounterMode =  TIM_CounterMode_Up;
 		TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure2);
