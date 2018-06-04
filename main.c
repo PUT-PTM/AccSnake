@@ -187,6 +187,8 @@ void gameover(){
 			tab[headx][heady+1].head=1;
 			tab[headx][heady+1].bonus=0;
 			tab[headx][heady].head=0;
+			punkty=punkty+pkt;
+			pkt=pkt+1;
 			tab[TIM3->PSC%82][TIM2->CNT%32].bonus=1;
 			break;
 			}else{
@@ -217,6 +219,8 @@ void gameover(){
 			tab[headx-1][heady].head=1;
 			tab[headx-1][heady].bonus=0;
 			tab[headx][heady].head=0;
+			punkty=punkty+pkt;
+			pkt=pkt+1;
 			tab[TIM3->PSC%80][TIM2->CNT%32].bonus=1;
 			break;
 			}else{
